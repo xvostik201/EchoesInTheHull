@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Move Settings")] 
     [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _mouseSensitivity = 2f;
+    [SerializeField] private float _mouseSensitivity = 8f;
     
     [Header("Gravity")]
     [SerializeField] private float _gravity = -9.8f;
@@ -40,38 +40,30 @@ public class PlayerController : MonoBehaviour
         _noise = _virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
-    void Update()
+    private void OnEnable()
     {
-        Look();
-        Move();
-        HandleInteraction();
+        InputManager.Instance.OnInteract += PerformInteraction;
     }
 
-    private void Look()
+    private void OnDisable()
     {
-        transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * _mouseSensitivity);
+        InputManager.Instance.OnInteract -= PerformInteraction;
+    }
+
+    void Update()
+    {
+        Move();
+        Look();
+        UpdateCursorUI();
     }
 
     private void Move()
     {
-        if (_characterController.isGrounded && _verticalVelocity < 0)
-        {
-            _verticalVelocity = -2f;
-        }
-        
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        
-        Vector3 moveDirection = (transform.forward * v + transform.right * h).normalized;
-        
-        if (moveDirection.magnitude > 0 && _characterController.isGrounded)
-        {
-            _noise.m_AmplitudeGain = _shakeAmount;
-        }
-        else
-        {
-            _noise.m_AmplitudeGain = 0f;
-        }
+        if (_characterController.isGrounded && _verticalVelocity < 0) _verticalVelocity = -2f;
+
+        Vector2 input = InputManager.Instance.GetMoveDirection();
+
+        Vector3 moveDirection = (transform.forward * input.y + transform.right * input.x).normalized;
 
         _verticalVelocity += _gravity * Time.deltaTime;
         Vector3 finalVelocity = moveDirection * _moveSpeed;
@@ -79,26 +71,29 @@ public class PlayerController : MonoBehaviour
         
         _characterController.Move(finalVelocity * Time.deltaTime);
     }
+    
+    private void Look()
+    {
+        Vector2 lookDelta = InputManager.Instance.GetLookDelta();
 
-    private void HandleInteraction()
+        float mouseX = lookDelta.x * _mouseSensitivity * Time.deltaTime;
+        transform.Rotate(Vector3.up * mouseX);
+    }
+
+    private void UpdateCursorUI()
     {
         Ray ray = new Ray(_virtualCamera.transform.position, _virtualCamera.transform.forward);
-        RaycastHit hit;
+        _cursor.color = Physics.Raycast(ray, _rayDistance, _interactionLayer) 
+            ? _interactionCursorColor 
+            : _defaultCursorColor;
+    }
 
-        if (Physics.Raycast(ray, out hit, _rayDistance, _interactionLayer))
+    private void PerformInteraction()
+    {
+        Ray ray = new Ray(_virtualCamera.transform.position, _virtualCamera.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, _rayDistance, _interactionLayer))
         {
-            _cursor.color = _interactionCursorColor;
-            
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (hit.collider.TryGetComponent(out Button button))
-                {
-                }
-            }
-        }
-        else
-        {
-            _cursor.color = _defaultCursorColor;
+            Debug.Log($"Interact with {hit.collider.name}");
         }
     }
 }
