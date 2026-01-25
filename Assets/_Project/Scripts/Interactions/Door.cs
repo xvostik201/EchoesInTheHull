@@ -25,8 +25,8 @@ namespace Echoes.Interactions
 
         private void Start()
         {
-            _leftDoorStartPosition = _leftDoor.position;
-            _rightDoorStartPosition = _rightDoor.position;
+            _leftDoorStartPosition = _leftDoor.localPosition;
+            _rightDoorStartPosition = _rightDoor.localPosition;
         }
 
         private void AnimateDoor(bool isOpen = true)
@@ -39,8 +39,8 @@ namespace Echoes.Interactions
         
             Debug.Log($"left door x - {leftDoorEndPos},  right door x - {rightDoorEndPos}");
         
-            _leftDoor.DOMoveX(leftDoorEndPos, _animateTime);
-            _rightDoor.DOMoveX(rightDoorEndPos, _animateTime);
+            _leftDoor.DOLocalMoveX(leftDoorEndPos, _animateTime);
+            _rightDoor.DOLocalMoveX(rightDoorEndPos, _animateTime);
         }
 
         private void OnTriggerEnter(Collider other)
