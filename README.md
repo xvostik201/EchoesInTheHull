@@ -24,7 +24,7 @@
 * **Фонарик (Flashlight):** Динамический источник света с проработанными тенями для создания атмосферы.
 * **Планшет (Tablet):** Мобильный терминал игрока. В текущей итерации служит базой для вывода системных логов и карты.
 
-![Equipment Demo](Documentation/Screenshots/Equipment/flashlight.jpg)
+![Equipment Demo](Assets/Documentation/Screenshots/Equipment/flashlight.png)
 *Демонстрация работы освещения и модели планшета в руках.*
 
 ---
@@ -34,11 +34,11 @@
 Уровень спроектирован по модульному принципу, что позволяет гибко настраивать логистику игрока и зоны ответственности систем питания.
 
 ### Глобальный вид (Top-Down View)
-![Map Layout Top](Documentation/Screenshots/Map/Screenshot_2.jpg)
+![Map Layout Top](Assets/Documentation/Screenshots/Map/Screenshot_2.png)
 *Архитектура станции: видны основные узлы, переходы и зоны размещения дверей.*
 
 ### Пространственная перспектива
-![Map Perspective](Documentation/Screenshots/Map/Screenshot_3.jpg)
+![Map Perspective](Assets/Documentation/Screenshots/Screenshot_3.png)
 *Тестирование масштабов и визуального объема помещений.*
 
 ---
@@ -46,11 +46,11 @@
 ## 📸 Скриншоты Разработки
 
 ### Взаимодействие и триггеры
-![Interactions](Documentation/Screenshots/Equipment/door.jpg)
+![Interactions](Assets/Documentation/Screenshots/Equipment/door.png)
 *Визуализация зон триггеров для автоматических систем.*
 
 ### Рабочее окружение
-![Development environment](Documentation/Screenshots/Equipment/tablet0.jpg)
+![Development environment](Assets/Documentation/Screenshots/Equipment/tablet0.png)
 *Проверка систем взаимодействия в редакторе Unity.*
 
 ---
