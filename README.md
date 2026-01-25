@@ -24,8 +24,11 @@
 * **Фонарик (Flashlight):** Динамический источник света с проработанными тенями для создания атмосферы.
 * **Планшет (Tablet):** Мобильный терминал игрока. В текущей итерации служит базой для вывода системных логов и карты.
 
-![Equipment Demo](Assets/Documentation/Screenshots/Equipment/flashlight.png)
+![Flashlight](Assets/Documentation/Screenshots/Equipment/Flashlight.png)
+![Tablet](Assets/Documentation/Screenshots/Equipment/Tablet0.png)
 *Демонстрация работы освещения и модели планшета в руках.*
+
+
 
 ---
 
@@ -46,11 +49,11 @@
 ## 📸 Скриншоты Разработки
 
 ### Взаимодействие и триггеры
-![Interactions](Assets/Documentation/Screenshots/Equipment/door.png)
+![Interactions](Assets/Documentation/Screenshots/Equipment/Door.png)
 *Визуализация зон триггеров для автоматических систем.*
 
 ### Рабочее окружение
-![Development environment](Assets/Documentation/Screenshots/Equipment/tablet0.png)
+![Development environment](Assets/Documentation/Screenshots/Equipment/TabletAndFlashlight.png)
 *Проверка систем взаимодействия в редакторе Unity.*
 
 ---
