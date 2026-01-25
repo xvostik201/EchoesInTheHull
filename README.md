@@ -41,7 +41,7 @@
 *Архитектура станции: видны основные узлы, переходы и зоны размещения дверей.*
 
 ### Пространственная перспектива
-![Map Perspective](Assets/Documentation/Screenshots/Screenshot_3.png)
+![Map Perspective](Assets/Documentation/Screenshots/Map/Screenshot_3.png)
 *Тестирование масштабов и визуального объема помещений.*
 
 ---
