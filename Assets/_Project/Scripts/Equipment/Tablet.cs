@@ -4,6 +4,7 @@ using UnityEngine;
 using Echoes.Core;
 using Echoes.Player;
 using Echoes.Systems;
+using TMPro;
 using UnityEngine.UI;
 
 namespace Echoes.Equipment
@@ -19,6 +20,7 @@ namespace Echoes.Equipment
         [SerializeField] private float _greenZoneHeight = 0.2f;
         
         [Header("Refs")]
+        [SerializeField] private TMP_Text _cameraName;
         [SerializeField] private List<CCTVCamera> _cameras;
 
         [SerializeField] private Button _forwardButton;
@@ -45,7 +47,8 @@ namespace Echoes.Equipment
         
         private void ActiveFirstCamera()
         {
-            _cameras[0].SwitchActiveCamera(true);
+            _cameras[_currentCam].SwitchActiveCamera(true);
+            _cameraName.text = _cameras[_currentCam].CameraName;
         }
 
         private void SwitchCamera(bool forward)
@@ -67,6 +70,7 @@ namespace Echoes.Equipment
             }
 
             _cameras[_currentCam].SwitchActiveCamera(true);
+            _cameraName.text = _cameras[_currentCam].CameraName;
         }
         private void CheckLookAngle()
         {
