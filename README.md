@@ -1,64 +1,62 @@
 # Project: Echoes of the Void
 
-Техническая демо-версия систем взаимодействия и архитектуры уровня. Проект сфокусирован на создании атмосферного окружения с глубокой интеграцией систем жизнеобеспечения.
+A technical demo showcasing interaction systems and level architecture. The project focuses on creating an atmospheric environment with deep integration of station life-support systems.
 
 ---
 
-## 🛠 Технические Системы (Systems)
+## 🛠 Technical Systems
 
-### 1. Система Питания и Управления (Power Management)
-Централизованная система контроля электросетей. Позволяет управлять состоянием всех активных объектов на уровне.
-* **Скрипт:** `PowerManager.cs`
-* **Функционал:** Перезагрузка систем, принудительное закрытие гермозатворов, контроль `_isPowerWorking` стейта.
+### 1. Power Management System
+A centralized control system for power grids, allowing management of the state of all active objects within the level.
+* **Script:** `PowerManager.cs`
+* **Functionality:** System reboots, forced blast door overrides, and global `_isPowerWorking` state monitoring.
 
-### 2. Система Интерактивных Дверей (Door System)
-Автоматические раздвижные двери с поддержкой локальных координат.
-* **Особенности:** Использование `DOTween` для плавных анимаций, оптимизация через `TryGetComponent`, защита от спама триггеров через `DOKill`.
-* **Логика:** Зависимость от питания. При отключении энергии двери блокируются в безопасном (закрытом) состоянии.
+### 2. Interactive Door System
+Automatic sliding doors with local coordinate support for modular deployment.
+* **Features:** Smooth animations powered by `DOTween`, optimization via `TryGetComponent`, and trigger spam protection using `DOKill`.
+* **Logic:** Power-grid dependency. Doors automatically lock in a secure (closed) state during power outages.
 
 ---
 
-## 🎒 Оснащение (Equipment)
+## 🎒 Equipment
 
-### Снаряжение Игрока
-* **Фонарик (Flashlight):** Динамический источник света с проработанными тенями для создания атмосферы.
-* **Планшет (Tablet):** Мобильный терминал игрока. В текущей итерации служит базой для вывода системных логов и карты.
+### Player Gear
+* **Flashlight:** A dynamic light source with high-fidelity shadows, designed to build tension and atmosphere.
+* **Tablet:** The player's mobile terminal. In the current iteration, it serves as a base for system logs and map data.
 
 ![Flashlight](Assets/Documentation/Screenshots/Equipment/Flashlight.png)
 ![Tablet](Assets/Documentation/Screenshots/Equipment/Tablet0.png)
-*Демонстрация работы освещения и модели планшета в руках.*
-
-
+*Demonstration of lighting effects and the in-hand tablet model.*
 
 ---
 
-## 🗺 Планировка и Карта (Map Layout)
+## 🗺 Map Layout
 
-Уровень спроектирован по модульному принципу, что позволяет гибко настраивать логистику игрока и зоны ответственности систем питания.
+The level is designed using a modular principle, allowing for flexible player logistics and precise power-zone management.
 
-### Глобальный вид (Top-Down View)
+### Global Schematic (Top-Down View)
 ![Map Layout Top](Assets/Documentation/Screenshots/Map/Screenshot_2.png)
-*Архитектура станции: видны основные узлы, переходы и зоны размещения дверей.*
+*Station architecture: showing main nodes, transitions, and door placement zones.*
 
-### Пространственная перспектива
+### Spatial Perspective
 ![Map Perspective](Assets/Documentation/Screenshots/Map/Screenshot_3.png)
-*Тестирование масштабов и визуального объема помещений.*
+*Scale testing and visual volume calibration of the station interior.*
 
 ---
 
-## 📸 Скриншоты Разработки
+## 📸 Development Screenshots
 
-### Взаимодействие и триггеры
+### Interactions and Triggers
 ![Interactions](Assets/Documentation/Screenshots/Equipment/Door.png)
-*Визуализация зон триггеров для автоматических систем.*
+*Visualization of trigger zones for automated systems.*
 
-### Рабочее окружение
+### Development Environment
 ![Development environment](Assets/Documentation/Screenshots/Equipment/TabletAndFlashlight.png)
-*Проверка систем взаимодействия в редакторе Unity.*
+*Testing interaction systems within the Unity Editor.*
 
 ---
 
-## 🚀 Технологический стек
+## 🚀 Tech Stack
 * **Engine:** Unity 2022.3 LTS
 * **Animation:** DOTween (Digital Ruby)
 * **Architecture:** Namespace-based, Event-driven (C#)
