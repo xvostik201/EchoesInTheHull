@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Echoes.Core;
 using Echoes.Player;
+using Echoes.Systems;
+using UnityEngine.UI;
 
 namespace Echoes.Equipment
 {
@@ -13,16 +17,57 @@ namespace Echoes.Equipment
         [Header("Screen zones")]
         [Range(0,1f)]
         [SerializeField] private float _greenZoneHeight = 0.2f;
+        
+        [Header("Refs")]
+        [SerializeField] private List<CCTVCamera> _cameras;
+
+        [SerializeField] private Button _forwardButton;
+        [SerializeField] private Button _backButton;
+
+        private int _currentCam;
     
         public bool IsInteracting { get; private set; }
-        public bool HasCollected { get; private set; } 
-    
+        public bool HasCollected { get; private set; }
+
+        private void Start()
+        {
+            ActiveFirstCamera();
+            
+            _forwardButton.onClick.AddListener(() => SwitchCamera(true));
+            _backButton.onClick.AddListener(() => SwitchCamera(false));
+        }
+
         void Update()
         {
             if (!HasCollected) return;
             CheckLookAngle();
         }
-    
+        
+        private void ActiveFirstCamera()
+        {
+            _cameras[0].SwitchActiveCamera(true);
+        }
+
+        private void SwitchCamera(bool forward)
+        {
+            _cameras[_currentCam].SwitchActiveCamera(false);
+
+            if (forward)
+            {
+                _currentCam = (_currentCam + 1) % _cameras.Count;
+            }
+            else
+            {
+                _currentCam--;
+        
+                if (_currentCam < 0) 
+                {
+                    _currentCam = _cameras.Count - 1;
+                }
+            }
+
+            _cameras[_currentCam].SwitchActiveCamera(true);
+        }
         private void CheckLookAngle()
         {
             float xRotation = _playerCamera.localEulerAngles.x;
