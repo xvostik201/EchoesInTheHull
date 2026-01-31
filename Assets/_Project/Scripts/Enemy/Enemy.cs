@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Echoes.Player;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -32,6 +33,9 @@ public class Enemy : MonoBehaviour
     private Transform _chaseTarget;
 
     private bool _isWaiting;
+
+    [Header("Body")] 
+    [SerializeField] private Transform _head;
     
     private NavMeshAgent _agent;
     private EnemyStates _currentState = EnemyStates.Patrol;
@@ -48,17 +52,23 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        bool canSee = IsPlayerVisible();
+
+        if (canSee && _currentState != EnemyStates.Chase)
+        {
+            StopAllCoroutines();
+            ChangeState(EnemyStates.Chase);
+        }
+        else if (!canSee && _currentState == EnemyStates.Chase)
+        {
+            _chaseTarget = null; 
+        }
+
         switch (_currentState)
         {
-            case EnemyStates.Patrol:
-                PathMovement();
-                break;
-            case EnemyStates.Chase:
-                Chase();
-                break;
-            case EnemyStates.Check:
-                Checking();
-                break;
+            case EnemyStates.Patrol: PathMovement(); break;
+            case EnemyStates.Chase: Chase(); break;
+            case EnemyStates.Check: Checking(); break;
         }
 
         HandleHearingLogic();
@@ -93,6 +103,27 @@ public class Enemy : MonoBehaviour
 
     private void Chase()
     {
+        if (_chaseTarget != null)
+        {
+            _agent.SetDestination(_chaseTarget.position);
+            _lastChasePosition = _chaseTarget.position;
+            
+            if (Vector3.Distance(transform.position,
+                    _chaseTarget.position) <= 1f)
+            {
+                Debug.Log("PLAYER CAUGHT");                
+            }
+        }
+        else
+        {
+            _agent.SetDestination(_lastChasePosition);
+
+            if (Vector3.Distance(transform.position,
+                    _lastChasePosition) <= 1f)
+            {
+                ChangeState(EnemyStates.Check);
+            }
+        }
     }
 
     private void PathMovement()
@@ -140,6 +171,24 @@ public class Enemy : MonoBehaviour
         _isListening = false;
     }
 
+    private bool IsPlayerVisible()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(_head.position, _head.forward, out hit, 10f))
+        {
+            if (hit.collider.TryGetComponent<PlayerController>(out PlayerController player))
+            {
+                if (player != null)
+                {
+                    _chaseTarget = player.transform;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     public void GetNewSound(Vector3 soundPosition)
     {
         _currentListeningSound++;
