@@ -84,3 +84,19 @@ Modular sliding doors with trigger protection and power-grid dependency.
 * **Animation**: DOTween (Digital Ruby)
 * **AI Architecture**: Custom Finite State Machine (FSM) + NavMesh
 * **Architecture**: Namespace-based, Event-driven (C#)
+
+---
+
+## ⚖️ Legal Notice
+
+**Copyright (c) 2026 [Zakhar/xvostik201]**
+
+This project is a **work in progress** and is the sole property of the developer. 
+
+* **Purpose:** This repository is intended for portfolio demonstration and educational review.
+* **Permissions:** No part of this project (code, assets, or design) may be reproduced, redistributed, or used in other projects without prior written consent from the author.
+* **Current Status:** Closed Source / All Rights Reserved.
+
+---
+
+**ECHOES IN THE HULL** — *Something is breathing in the vents. Don't let the power go out.*
