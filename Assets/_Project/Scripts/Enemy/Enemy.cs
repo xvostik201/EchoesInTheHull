@@ -37,12 +37,18 @@ public class Enemy : MonoBehaviour
     [Header("Body")] 
     [SerializeField] private Transform _head;
     
+    [Header("FOV")]
+    [SerializeField, Range(0, 180)] private float _fovAngle;
+    [SerializeField] private float _fovDistance = 15f;
+    
     private NavMeshAgent _agent;
+    private PlayerController _cachedPlayer;
     private EnemyStates _currentState = EnemyStates.Patrol;
 
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _cachedPlayer = FindObjectOfType<PlayerController>();
     }
 
     void Start()
@@ -174,14 +180,19 @@ public class Enemy : MonoBehaviour
     private bool IsPlayerVisible()
     {
         RaycastHit hit;
+        PlayerController player = _cachedPlayer;
+        
+        Vector3 directionToPlayer = (player.transform.position - _head.position).normalized;
 
-        if (Physics.Raycast(_head.position, _head.forward, out hit, 10f))
+        float angle = Vector3.Angle(_head.forward, directionToPlayer);
+
+        if (angle < _fovAngle * 0.5f)
         {
-            if (hit.collider.TryGetComponent<PlayerController>(out PlayerController player))
+            if (Physics.Raycast(_head.position, directionToPlayer, out hit, _fovDistance))
             {
-                if (player != null)
+                if (hit.collider.TryGetComponent<PlayerController>(out PlayerController p))
                 {
-                    _chaseTarget = player.transform;
+                    _chaseTarget = p.transform;
                     return true;
                 }
             }
@@ -217,5 +228,31 @@ public class Enemy : MonoBehaviour
     {
         _agent.isStopped = (_currentState == EnemyStates.Listen);
         _agent.acceleration = _currentState == EnemyStates.Chase ?  _chaseAcceleration : _defaultAcceleration;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_head != null)
+        {
+            Gizmos.color = Color.yellow;
+            
+            Vector3 forward =  _head.forward * _fovDistance;
+            
+            Quaternion leftRayRotation = Quaternion.AngleAxis(-_fovAngle * 0.5f, Vector3.up);
+            Quaternion rightRayRotation = Quaternion.AngleAxis(_fovAngle * 0.5f, Vector3.up);
+            
+            Vector3 leftRay = leftRayRotation * forward;
+            Vector3 rightRay = rightRayRotation * forward;
+
+            Vector3 leftDirection = _head.position + leftRay;
+            Vector3 rightDirection = _head.position + rightRay;
+            Gizmos.DrawLine(leftDirection, rightDirection);
+            
+            Gizmos.DrawRay(_head.position, leftRay);
+            Gizmos.DrawRay(_head.position, rightRay);
+            
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(_head.position, forward);
+        }
     }
 }
