@@ -144,7 +144,8 @@ public class Enemy : MonoBehaviour
 
     private void ChangeState(EnemyStates newState)
     {
-        switch (newState)
+        _currentState = newState;
+        switch (_currentState)
         {
             case EnemyStates.Patrol:
                 _agent.isStopped = false;
