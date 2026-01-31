@@ -30,6 +30,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _defaultAcceleration = 8f;
     private Vector3 _lastChasePosition;
     private Transform _chaseTarget;
+
+    private bool _isWaiting;
     
     private NavMeshAgent _agent;
     private EnemyStates _currentState = EnemyStates.Patrol;
@@ -66,10 +68,10 @@ public class Enemy : MonoBehaviour
     {
         _agent.SetDestination(_lastSoundPosition);
 
-        if (Vector3.Distance(_lastSoundPosition, transform.position) < 0.5f)
+        if (Vector3.Distance(_lastSoundPosition, transform.position) < 0.5f && !_isWaiting)
         {
             _agent.isStopped = true;
-
+            _isWaiting = true;
             StartCoroutine(WaitAndLookAround());
         }
     }
@@ -118,7 +120,8 @@ public class Enemy : MonoBehaviour
     private IEnumerator WaitAndLookAround()
     {
         yield return new WaitForSeconds(3f);
-        
+
+        _isWaiting = false;
         ChangeState(EnemyStates.Patrol);
     }
     private IEnumerator WaitAndListenAround()
