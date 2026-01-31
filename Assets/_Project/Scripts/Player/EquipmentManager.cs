@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening.Core.Easing;
 using Echoes.Core;
 using Echoes.Equipment;
@@ -8,9 +9,14 @@ namespace Echoes.Player
 {
     public class EquipmentManager : MonoBehaviour
     {
+        [Header("Equipment")]
+        [SerializeField] private List<GameObject> _equipmentList;
+        
+        [Header("Equipment objects")]
         [SerializeField] private GameObject _flashlightObject; 
         [SerializeField] private GameObject _tabletObject;    
     
+        [Header("Equipment components")]
         [SerializeField] private Flashlight _flashlight;
         [SerializeField] private Tablet _tablet;
     
@@ -27,14 +33,16 @@ namespace Echoes.Player
         {
             InputManager.Instance.OnSlot1 += EquipFlashlight;
             InputManager.Instance.OnSlot2 += EquipTablet;
+            InputManager.Instance.OnHideAll += HandleHideAll;
         }
 
         public void EquipFlashlight()
         {
             if (!_flashlight.HasCollected) return;
 
+            HandleHideAll();
+            
             _flashlightObject.SetActive(true);
-            _tabletObject.SetActive(false);
         
             CursorManager.Instance.SetCursorState(false);
         }
@@ -43,8 +51,17 @@ namespace Echoes.Player
         {
             if (!_tablet.HasCollected) return;
 
-            _tabletObject.SetActive(true);
-            _flashlightObject.SetActive(false); 
+            HandleHideAll();
+
+            _tabletObject.gameObject.SetActive(true);
+        }
+
+        private void HandleHideAll()
+        {
+            foreach (GameObject equipment in _equipmentList)
+            {
+                equipment.SetActive(false);
+            }
         }
     }
 }

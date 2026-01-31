@@ -14,9 +14,15 @@ namespace Echoes.Core
     
         public event Action OnToggleFlashlight;
         public event Action OnInteract;
+        
+        public event Action<float> OnScroll;
+        public event Action OnExitLaptop;
+        
 
         public event Action OnSlot1;
         public event Action OnSlot2;
+
+        public event Action OnHideAll;
 
         private void Awake()
         {
@@ -40,15 +46,20 @@ namespace Echoes.Core
             _playerActionMap.Flashlight.Toggle.performed += HandleFlashlight;
             _playerActionMap.Player.Interact.performed += HandleInteract;
         
+            _playerActionMap.Player.Exit.performed += ctx => OnExitLaptop?.Invoke();
+            
+            _playerActionMap.Player.MouseScroll.performed += ctx => OnScroll?.Invoke(ctx.ReadValue<Vector2>().y);
+            
             _playerActionMap.Equipment.Slot1.performed += ctx => OnSlot1?.Invoke();
             _playerActionMap.Equipment.Slot2.performed += ctx => OnSlot2?.Invoke();
+            _playerActionMap.Equipment.HideAll.performed += ctx => OnHideAll?.Invoke();
         }
 
         private void OnDisable()
         {
             _playerActionMap.Flashlight.Toggle.performed -= HandleFlashlight;
             _playerActionMap.Player.Interact.performed -= HandleInteract;
-        
+            
             _playerActionMap.Disable();
         }
 

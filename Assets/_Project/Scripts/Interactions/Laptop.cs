@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using Echoes.Core;
@@ -34,27 +35,41 @@ namespace Echoes.Interactions
             _inputField.onEndEdit.AddListener(delegate { CheckPassword(); });
         }
 
-        private void Update()
+        private void OnEnable()
         {
-            if (_isUsingLaptop && Input.GetKeyDown(KeyCode.Escape))
-            {
-                ExitLaptop();
-            }
+            InputManager.Instance.OnExitLaptop += HandleExitLaptop;
+            InputManager.Instance.OnScroll += HandleScrollText;
+        }
 
+        private void OnDisable()
+        {
+            InputManager.Instance.OnExitLaptop -= HandleExitLaptop;
+            InputManager.Instance.OnScroll += HandleScrollText;
+        }
+
+        private void HandleScrollText(float speed)
+        {
             if (_isUsingLaptop && _isEntered)
             {
-                float wheel = Input.GetAxis("Mouse ScrollWheel");
+                float normalizedSpeed = Mathf.Sign(speed); 
 
-                if (Mathf.Abs(wheel) > 0.01f)
+                if (Mathf.Abs(speed) > 0.01f)
                 {
                     RectTransform rect = _noteTMPtext.GetComponent<RectTransform>();
 
-                    float newY = rect.anchoredPosition.y + (wheel * _scrollSpeed);
+                    float newY = rect.anchoredPosition.y + (normalizedSpeed * _scrollSpeed);
 
                     newY = Mathf.Clamp(newY, _minYClamp, _maxYClamp);
-
                     rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, newY);
                 }
+            }
+        }
+
+        private void HandleExitLaptop()
+        {
+            if (_isUsingLaptop)
+            {
+                ExitLaptop();
             }
         }
 
