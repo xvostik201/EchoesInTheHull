@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour
     
     [SerializeField] private float _chaseDistance = 5f;
     [SerializeField] private float _chaseAcceleration = 10f;
+    [SerializeField] private float _defaultAcceleration = 8f;
     private Vector3 _lastChasePosition;
     private Transform _chaseTarget;
     
@@ -148,17 +149,21 @@ public class Enemy : MonoBehaviour
         switch (_currentState)
         {
             case EnemyStates.Patrol:
-                _agent.isStopped = false;
                 break;
             case EnemyStates.Listen:
-                _agent.isStopped = true;
                 break;
             case EnemyStates.Chase:
-                _agent.isStopped = false;
                 break;
             case EnemyStates.Check:
-                _agent.isStopped = false;
                 break;
         }
+
+        UpdateAgentSettings();
+    }
+
+    private void UpdateAgentSettings()
+    {
+        _agent.isStopped = (_currentState == EnemyStates.Listen);
+        _agent.acceleration = _currentState == EnemyStates.Chase ?  _chaseAcceleration : _defaultAcceleration;
     }
 }

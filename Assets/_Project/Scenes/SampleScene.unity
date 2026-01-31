@@ -3096,6 +3096,7 @@ MonoBehaviour:
     - {fileID: 1855452535}
     - {fileID: 1000866058}
   _allKnowSounds: []
+  _newSoundWaitTime: 5
   _maxListeningSounds: 2
   _chaseDistance: 5
   _chaseAcceleration: 10
