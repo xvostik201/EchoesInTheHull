@@ -6,14 +6,11 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("Path")]
-    [SerializeField] private EnemyPath[] _enemyPaths;
+    [Header("Patrol && Path")]
+	[SerializeField] private EnemyPath[] _enemyPaths;
  
     private int _currentPathIndex;
     private int _currentPointIndex;
-
-    [Header("Patrol")]
-    //smthg
 
     [Header("Listen")]
     [SerializeField] private AudioSource[] _allKnowSounds;
