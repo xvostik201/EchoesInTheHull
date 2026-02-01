@@ -12,6 +12,10 @@ namespace Echoes.Interactions
         [Header("General Settings")]
         [SerializeField] private Transform _leftDoor;
         [SerializeField] private Transform _rightDoor;
+        
+        [Header("Door Colliders")]
+        [SerializeField] private Collider _leftDoorCollider;
+        [SerializeField] private Collider _rightDoorCollider;
 
         [Header("Power")]
         [SerializeField] private bool _isPowerWorking = true;
@@ -36,6 +40,9 @@ namespace Echoes.Interactions
         
             float leftDoorEndPos = isOpen ? _leftDoorStartPosition.x - _xOffset : _leftDoorStartPosition.x;
             float rightDoorEndPos = isOpen ? _rightDoorStartPosition.x + _xOffset : _rightDoorStartPosition.x;
+
+            _rightDoorCollider.enabled = !isOpen;
+            _leftDoorCollider.enabled = !isOpen;
         
             Debug.Log($"left door x - {leftDoorEndPos},  right door x - {rightDoorEndPos}");
         
