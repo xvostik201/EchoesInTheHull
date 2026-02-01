@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Echoes.Player;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,28 +6,22 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
     [Header("Patrol && Path")]
-	[SerializeField] private EnemyPath[] _enemyPaths;
- 
+    [SerializeField] private EnemyPath[] _enemyPaths;
     private int _currentPathIndex;
     private int _currentPointIndex;
 
     [Header("Listen")]
-    [SerializeField] private AudioSource[] _allKnowSounds;
-
     [SerializeField] private float _newSoundWaitTime = 5f;
     [SerializeField] private int _maxListeningSounds = 2;
     
     private int _currentListeningSound;
-    private int _lastListeningSound;
     private Vector3 _lastSoundPosition;
     private bool _isListening = false;
     
     [Header("Chase")]
-    
-    [SerializeField] private float _chaseDistance = 5f;
     [SerializeField] private float _chaseAcceleration = 10f;
     [SerializeField] private float _defaultAcceleration = 8f;
-    private Vector3 _lastChasePosition;
+    private Vector3 _lastTargetPosition;
     private Transform _chaseTarget;
 
     private bool _isWaiting;
@@ -40,6 +32,7 @@ public class Enemy : MonoBehaviour
     [Header("FOV")]
     [SerializeField, Range(0, 180)] private float _fovAngle;
     [SerializeField] private float _fovDistance = 15f;
+    [SerializeField] private LayerMask _obstructionMask;
     
     private NavMeshAgent _agent;
     private PlayerController _cachedPlayer;
@@ -53,7 +46,8 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        _agent.SetDestination(_enemyPaths[_currentPathIndex].points[_currentPointIndex].position);
+        if (_enemyPaths.Length > 0)
+            _agent.SetDestination(_enemyPaths[_currentPathIndex].points[_currentPointIndex].position);
     }
 
     void Update()
@@ -63,91 +57,76 @@ public class Enemy : MonoBehaviour
         if (canSee && _currentState != EnemyStates.Chase)
         {
             StopAllCoroutines();
+            _isWaiting = false;
+            _isListening = false;
             ChangeState(EnemyStates.Chase);
-        }
-        else if (!canSee && _currentState == EnemyStates.Chase)
-        {
-            _chaseTarget = null; 
         }
 
         switch (_currentState)
         {
             case EnemyStates.Patrol: PathMovement(); break;
-            case EnemyStates.Chase: Chase(); break;
+            case EnemyStates.Chase: Chase(canSee); break;
             case EnemyStates.Check: Checking(); break;
+            case EnemyStates.Listen:  break;
         }
 
         HandleHearingLogic();
     }
 
-    private void Checking()
-    {
-        _agent.SetDestination(_lastSoundPosition);
-
-        if (Vector3.Distance(_lastSoundPosition, transform.position) < 0.5f && !_isWaiting)
-        {
-            _agent.isStopped = true;
-            _isWaiting = true;
-            StartCoroutine(WaitAndLookAround());
-        }
-    }
-
-    private void Listen()
-    {
-        _isListening = true;
-        _lastListeningSound = _currentListeningSound;
-        StartCoroutine(WaitAndListenAround());
-    }
-
     private void HandleHearingLogic()
     {
-        if (_currentListeningSound > 0 && !_isListening)
+        if (_currentListeningSound > 0 && !_isListening && _currentState != EnemyStates.Chase)
         {
-            Listen();
+            ChangeState(EnemyStates.Listen);
+            StartCoroutine(WaitAndListenAround());
         }
     }
 
-    private void Chase()
+    private void Chase(bool canSee)
     {
-        if (_chaseTarget != null)
+        if (canSee && _chaseTarget != null)
         {
-            _agent.SetDestination(_chaseTarget.position);
-            _lastChasePosition = _chaseTarget.position;
+            _lastTargetPosition = _chaseTarget.position; 
+            _agent.SetDestination(_lastTargetPosition);
             
-            if (Vector3.Distance(transform.position,
-                    _chaseTarget.position) <= 1f)
+            if (Vector3.Distance(transform.position, _chaseTarget.position) <= 1.2f)
             {
-                Debug.Log("PLAYER CAUGHT");                
+                Debug.Log("PLAYER CAUGHT");
             }
         }
         else
         {
-            _agent.SetDestination(_lastChasePosition);
+            _agent.SetDestination(_lastTargetPosition);
 
-            if (Vector3.Distance(transform.position,
-                    _lastChasePosition) <= 1f)
+            if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.5f)
             {
                 ChangeState(EnemyStates.Check);
             }
         }
     }
 
+    private void Checking()
+    {
+        _agent.SetDestination(_lastTargetPosition);
+
+        if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.5f && !_isWaiting)
+        {
+            StartCoroutine(WaitAndLookAround());
+        }
+    }
+
     private void PathMovement()
     {
-        if (Vector3.Distance(_enemyPaths[_currentPathIndex].points[_currentPointIndex].position,
-            transform.position) < 0.5f)
+        if (_enemyPaths.Length == 0) return;
+
+        if (!_agent.pathPending && _agent.remainingDistance < 0.5f)
         {
             _currentPointIndex++;
 
             if (_currentPointIndex >= _enemyPaths[_currentPathIndex].points.Length)
             {
                 _currentPointIndex = 0; 
-                _currentPathIndex++;    
-            
-                if (_currentPathIndex >= _enemyPaths.Length)
-                {
-                    _currentPathIndex = 0;
-                }
+                _currentPathIndex = (_currentPathIndex + 1) % _enemyPaths.Length;
             }
 
             _agent.SetDestination(_enemyPaths[_currentPathIndex].points[_currentPointIndex].position);
@@ -156,43 +135,46 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator WaitAndLookAround()
     {
+        _isWaiting = true;
+        _agent.isStopped = true;
+        
         yield return new WaitForSeconds(3f);
 
+        _agent.isStopped = false;
         _isWaiting = false;
         ChangeState(EnemyStates.Patrol);
     }
+
     private IEnumerator WaitAndListenAround()
     {
-        yield return new WaitForSeconds(_newSoundWaitTime);
-        if (_currentListeningSound == _lastListeningSound)
-        {
-            ChangeState(EnemyStates.Patrol);
-        }
-        else
-        {
-            ChangeState(EnemyStates.Check);
-        }
+        _isListening = true;
+        _agent.isStopped = true;
         
-        _currentListeningSound = 0;
+        yield return new WaitForSeconds(_newSoundWaitTime);
+        
+        _agent.isStopped = false;
         _isListening = false;
+        _currentListeningSound = 0;
+
+        _lastTargetPosition = _lastSoundPosition;
+        ChangeState(EnemyStates.Check);
     }
 
     private bool IsPlayerVisible()
     {
-        RaycastHit hit;
-        PlayerController player = _cachedPlayer;
-        
-        Vector3 directionToPlayer = (player.transform.position - _head.position).normalized;
+        if (_cachedPlayer == null) return false;
 
+        Vector3 directionToPlayer = (_cachedPlayer.transform.position - _head.position).normalized;
         float angle = Vector3.Angle(_head.forward, directionToPlayer);
 
         if (angle < _fovAngle * 0.5f)
         {
-            if (Physics.Raycast(_head.position, directionToPlayer, out hit, _fovDistance))
+            if (Physics.Raycast(_head.position, directionToPlayer, out RaycastHit hit, _fovDistance, _obstructionMask))
             {
-                if (hit.collider.TryGetComponent<PlayerController>(out PlayerController p))
+                if (hit.collider.CompareTag("Player") 
+                    || hit.collider.TryGetComponent<PlayerController>(out _))
                 {
-                    _chaseTarget = p.transform;
+                    _chaseTarget = _cachedPlayer.transform;
                     return true;
                 }
             }
@@ -202,57 +184,43 @@ public class Enemy : MonoBehaviour
     
     public void GetNewSound(Vector3 soundPosition)
     {
+        if (_currentState == EnemyStates.Chase) return;
+
         _currentListeningSound++;
         _lastSoundPosition = soundPosition;
     }
 
     private void ChangeState(EnemyStates newState)
     {
+        if (_currentState == newState) return;
+
         _currentState = newState;
-        switch (_currentState)
+        
+        _agent.isStopped = false;
+        _agent.acceleration = (_currentState == EnemyStates.Chase) ? _chaseAcceleration : _defaultAcceleration;
+        
+        if (_currentState == EnemyStates.Patrol)
         {
-            case EnemyStates.Patrol:
-                break;
-            case EnemyStates.Listen:
-                break;
-            case EnemyStates.Chase:
-                break;
-            case EnemyStates.Check:
-                break;
+            _agent.SetDestination(_enemyPaths[_currentPathIndex].points[_currentPointIndex].position);
         }
-
-        UpdateAgentSettings();
-    }
-
-    private void UpdateAgentSettings()
-    {
-        _agent.isStopped = (_currentState == EnemyStates.Listen);
-        _agent.acceleration = _currentState == EnemyStates.Chase ?  _chaseAcceleration : _defaultAcceleration;
     }
 
     private void OnDrawGizmos()
     {
         if (_head != null)
         {
-            Gizmos.color = Color.yellow;
+            Gizmos.color = _currentState == EnemyStates.Chase ? Color.red : Color.yellow;
             
-            Vector3 forward =  _head.forward * _fovDistance;
-            
+            Vector3 forward = _head.forward * _fovDistance;
             Quaternion leftRayRotation = Quaternion.AngleAxis(-_fovAngle * 0.5f, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(_fovAngle * 0.5f, Vector3.up);
             
-            Vector3 leftRay = leftRayRotation * forward;
-            Vector3 rightRay = rightRayRotation * forward;
-
-            Vector3 leftDirection = _head.position + leftRay;
-            Vector3 rightDirection = _head.position + rightRay;
-            Gizmos.DrawLine(leftDirection, rightDirection);
-            
-            Gizmos.DrawRay(_head.position, leftRay);
-            Gizmos.DrawRay(_head.position, rightRay);
+            Gizmos.DrawRay(_head.position, leftRayRotation * forward);
+            Gizmos.DrawRay(_head.position, rightRayRotation * forward);
+            Gizmos.DrawLine(_head.position + (leftRayRotation * forward), _head.position + (rightRayRotation * forward));
             
             Gizmos.color = Color.blue;
-            Gizmos.DrawRay(_head.position, forward);
+            Gizmos.DrawWireSphere(_lastTargetPosition, 0.5f);
         }
     }
 }
