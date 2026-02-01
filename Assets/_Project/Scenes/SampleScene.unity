@@ -2923,7 +2923,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 226862922}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CamHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3046,7 +3046,7 @@ Transform:
   m_GameObject: {fileID: 232031919}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -32, y: -1, z: 3}
+  m_LocalPosition: {x: -32, y: -1, z: -8.36}
   m_LocalScale: {x: 2, y: 3, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3066,7 +3066,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 260
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -3096,15 +3096,16 @@ MonoBehaviour:
     - {fileID: 2064533960}
     - {fileID: 1855452535}
     - {fileID: 1000866058}
-  _allKnowSounds: []
   _newSoundWaitTime: 5
   _maxListeningSounds: 2
-  _chaseDistance: 5
   _chaseAcceleration: 10
   _defaultAcceleration: 8
   _head: {fileID: 776593570}
-  _fovAngle: 74
+  _fovAngle: 90
   _fovDistance: 15
+  _obstructionMask:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1 &239204837
 GameObject:
   m_ObjectHideFlags: 0
@@ -5775,7 +5776,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.6, y: -0.9760001, z: 0.23500003}
+  m_LocalPosition: {x: -31.5, y: -0.9760001, z: 10.434999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7763,7 +7764,7 @@ GameObject:
   - component: {fileID: 400500745}
   - component: {fileID: 400500744}
   - component: {fileID: 400500743}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Next
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8845,7 +8846,7 @@ GameObject:
   - component: {fileID: 532458333}
   - component: {fileID: 532458332}
   - component: {fileID: 532458331}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Preview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8964,7 +8965,7 @@ GameObject:
   - component: {fileID: 581536502}
   - component: {fileID: 581536501}
   - component: {fileID: 581536503}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Virtual Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9052,7 +9053,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 606574911}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TabletParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12370,7 +12371,7 @@ GameObject:
   - component: {fileID: 885980933}
   - component: {fileID: 885980932}
   - component: {fileID: 885980931}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LightBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17945,7 +17946,7 @@ GameObject:
   - component: {fileID: 1014821952}
   - component: {fileID: 1014821951}
   - component: {fileID: 1014821954}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tablet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18522,7 +18523,7 @@ GameObject:
   - component: {fileID: 1060500894}
   - component: {fileID: 1060500896}
   - component: {fileID: 1060500895}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20762,7 +20763,7 @@ GameObject:
   - component: {fileID: 1166814823}
   - component: {fileID: 1166814825}
   - component: {fileID: 1166814824}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: CameraName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22366,7 +22367,7 @@ GameObject:
   - component: {fileID: 1426843967}
   - component: {fileID: 1426843966}
   - component: {fileID: 1426843965}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22483,7 +22484,7 @@ GameObject:
   - component: {fileID: 1544059543}
   - component: {fileID: 1544059542}
   - component: {fileID: 1544059541}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22790,7 +22791,7 @@ GameObject:
   - component: {fileID: 1585894122}
   - component: {fileID: 1585894120}
   - component: {fileID: 1585894123}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23972,7 +23973,7 @@ GameObject:
   - component: {fileID: 1792937544}
   - component: {fileID: 1792937546}
   - component: {fileID: 1792937547}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: CamOutput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24043,7 +24044,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1810718459}
   - component: {fileID: 1810718460}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MainFlashlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25838,7 +25839,7 @@ Transform:
   m_GameObject: {fileID: 1943965346}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.6, y: -1.58, z: -0.2}
+  m_LocalPosition: {x: -31.5, y: -1.58, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
