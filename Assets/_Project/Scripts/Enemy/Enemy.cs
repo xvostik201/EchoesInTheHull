@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     [Header("Listen")]
     [SerializeField] private float _newSoundWaitTime = 5f;
     [SerializeField] private int _maxListeningSounds = 2;
+    [SerializeField] private float _maxSoundDistance = 25f;
     
     private int _currentListeningSound;
     private Vector3 _lastSoundPosition;
@@ -184,8 +185,12 @@ public class Enemy : MonoBehaviour
     
     public void GetNewSound(Vector3 soundPosition)
     {
-        if (_currentState == EnemyStates.Chase) return;
-
+        if(Vector3.Distance(soundPosition, transform.position) <= _maxSoundDistance)
+            return;
+        
+        if (_currentState == EnemyStates.Chase)
+            return;
+        
         _currentListeningSound++;
         _lastSoundPosition = soundPosition;
     }
