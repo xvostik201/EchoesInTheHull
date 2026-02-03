@@ -29,6 +29,12 @@ namespace Echoes.Player
         [SerializeField] private Image _cursor;
         [SerializeField] private Color _defaultCursorColor;
         [SerializeField] private Color _interactionCursorColor;
+
+        [Header("Sound settings")]
+        [SerializeField] private GameObject _sound;
+
+        [SerializeField] private float _stepTime = 1f;
+        private float _stepTimer;
         
         private CharacterController _characterController;
         private CinemachineBasicMultiChannelPerlin _noise;
@@ -74,6 +80,16 @@ namespace Echoes.Player
             _verticalVelocity += _gravity * Time.deltaTime;
             Vector3 finalVelocity = moveDirection * _moveSpeed;
             finalVelocity.y = _verticalVelocity;
+
+            if (moveDirection.magnitude > 0.1f)
+            {
+                _stepTimer += Time.deltaTime;
+                if (_stepTimer >= _stepTime)
+                {
+                    GameObject sound = Instantiate(_sound, transform.position, Quaternion.identity);
+                    _stepTimer = 0;
+                }
+            }
             
             _characterController.Move(finalVelocity * Time.deltaTime);
         }

@@ -151,6 +151,7 @@ public class Enemy : MonoBehaviour
         _isListening = true;
         _agent.isStopped = true;
         
+        
         yield return new WaitForSeconds(_newSoundWaitTime);
         
         _agent.isStopped = false;
@@ -185,14 +186,25 @@ public class Enemy : MonoBehaviour
     
     public void GetNewSound(Vector3 soundPosition)
     {
-        if(Vector3.Distance(soundPosition, transform.position) <= _maxSoundDistance)
-            return;
-        
-        if (_currentState == EnemyStates.Chase)
-            return;
-        
+        float distance = Vector3.Distance(soundPosition, transform.position);
+    
+        if (distance >= _maxSoundDistance) return;
+    
+        if (_currentState == EnemyStates.Chase) return;
+
+        if (_currentState == EnemyStates.Check)
+        {
+            float oldDistance = Vector3.Distance(_lastTargetPosition, transform.position);
+            if (distance > oldDistance - 2f) return; 
+        }
+    
         _currentListeningSound++;
         _lastSoundPosition = soundPosition;
+    
+        if (_currentState == EnemyStates.Patrol)
+        {
+            ChangeState(EnemyStates.Listen);
+        }
     }
 
     private void ChangeState(EnemyStates newState)
@@ -226,6 +238,9 @@ public class Enemy : MonoBehaviour
             
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(_lastTargetPosition, 0.5f);
+            
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.position, _maxSoundDistance);
         }
     }
 }
